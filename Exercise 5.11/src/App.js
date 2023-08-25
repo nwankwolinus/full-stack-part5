@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -19,6 +19,7 @@ const App = () => {
   // const [errorMessage, setErrorMessage] = useState('some error happened...')
   const [notificationType, setNotificationType] = useState('success')
 
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -66,26 +67,10 @@ const App = () => {
   }
 
   const handleCreateBlog = async (newBlog) => {
-
-    console.log('newBlog', newBlog.newBlog)
-    try {
-      let blog = await blogService.create(newBlog)
-      console.log(blog)
-      setNotificationMessage(`a new blog ${blog.title} by ${blog.author}`)
-      setNotificationType('success')
-
-      //update 
-     let updatedBlogs = await blogService.getAll()
-     setBlogs(updatedBlogs)
-  
-
-      // setTimeout(() => {
-      //   setNotificationMessage(null)
-      // }, 1000);
-    } catch (exception) {
-      alert('Create, Blog exception')
-    }
-
+    const createdBlog = await blogService.create(newBlog)
+    setNotificationMessage(`A new blog '${newBlog.title}' by '${newBlog.author}' added`)
+    setBlogs(blogs.concat(createdBlog))
+    blogFormRef.current.toggleVisibility()
   }
 
   const handleLogout = (event) => {
@@ -95,6 +80,7 @@ const App = () => {
   }
 
   const loginForm = () => (
+    <div><h2>log in to application</h2>
     <form onSubmit={handleLogin}>
       <div>
         username
@@ -118,10 +104,11 @@ const App = () => {
       </div>
       <button id='login-button' type="submit">login</button>
     </form>
+  </div>
   )
 
   const createForm = () => (
-    <Togglable buttonLabel='new note'>
+    <Togglable buttonLabel='new blog' ref={blogFormRef}>
       <CreateForm
         createBlog={handleCreateBlog}>
       </CreateForm>
@@ -130,11 +117,15 @@ const App = () => {
 
   const blogList = () => {
 
+    let sortedBlogs = blogs.sort((a, b) => a.likes - b.likes)
+
     return (
       <div>
         <h2>blogs</h2>
-        {blogs.map(blog =>
-          <Blog key={blog.id} initBlog={blog} updateBlog={updateBlog} />
+        {sortedBlogs.map(blog =>
+          <Blog key={blog.id} initBlog={blog} updateBlog={updateBlog}
+          user = {user}
+          />
         )}
       </div>
     )

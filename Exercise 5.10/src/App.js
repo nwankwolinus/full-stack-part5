@@ -130,10 +130,12 @@ const App = () => {
 
   const blogList = () => {
 
+    let sortedBlogs = blogs.sort((a, b) => a.likes - b.likes)
+
     return (
       <div>
         <h2>blogs</h2>
-        {blogs.map(blog =>
+        {sortedBlogs.map(blog =>
           <Blog key={blog.id} initBlog={blog} updateBlog={updateBlog} />
         )}
       </div>

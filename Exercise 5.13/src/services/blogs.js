@@ -1,3 +1,4 @@
+
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
@@ -14,7 +15,7 @@ const getAll = () => {
 
 const create = async (blogData) => {
   const config = {
-    headers: { Authorization: token}
+    headers: { Authorization: token }
   }
 
   const blog = await axios.post(baseUrl, blogData, config)
@@ -31,5 +32,12 @@ const update = async (id,blogData) => {
   return blog.data
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, setToken, create, update }
+const deleteBlog = async (id) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const blog = await axios.delete(`${baseUrl}/${id}`, config)
+  return blog.data
+}
+
+export default { getAll, setToken, create, update, deleteBlog }
