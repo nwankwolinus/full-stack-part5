@@ -68,8 +68,8 @@ const Blog = ({ initBlog, updateBlog, user }) => {
 }
 
 Blog.propTypes = {
-  like: PropTypes.func.isRequired,
-  remove: PropTypes.func.isRequired,
+  like: PropTypes.func,
+  remove: PropTypes.func,
   canRemove: PropTypes.bool,
   blog: PropTypes.shape({
     title: PropTypes.string,
